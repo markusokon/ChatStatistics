@@ -19,6 +19,9 @@ public class Server {
     @JoinColumn(referencedColumnName = "servers")
     private List<User> users;
 
+    @OneToMany(mappedBy = "server")
+    private List<Channel> channel_Id;
+
     private String name;
 
     protected Server() {

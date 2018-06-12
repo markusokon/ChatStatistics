@@ -2,10 +2,7 @@ package de.markus.statbot.model;
 
 import lombok.Getter;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity
@@ -18,16 +15,21 @@ public class Message {
     private Date creationDate;
 
     @ManyToOne
-    @JoinColumn(name="user_Id", nullable=false, updatable = false)
+    @JoinColumn(name = "user_Id", nullable = false, updatable = false)
     private User author;
+
+    @ManyToOne
+    @JoinColumn(name = "messages", updatable = false)
+    private Channel channel_Id;
 
     protected Message() {
     }
 
-    public Message(Long message_id, Integer length, User author, Date creationDate) {
+    public Message(Long message_id, Integer length, User author, Date creationDate, Channel channel_Id) {
         this.message_id = message_id;
         this.length = length;
         this.author = author;
         this.creationDate = creationDate;
+        this.channel_Id = channel_Id;
     }
 }

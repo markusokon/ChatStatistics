@@ -1,8 +1,10 @@
 package de.markus.statbot.bot;
 
+import de.markus.statbot.model.Channel;
 import de.markus.statbot.model.Message;
 import de.markus.statbot.model.Server;
 import de.markus.statbot.model.User;
+import de.markus.statbot.repositories.ChannelRepository;
 import de.markus.statbot.repositories.MessageRepository;
 import de.markus.statbot.repositories.ServerRepository;
 import de.markus.statbot.repositories.UserRepository;
@@ -29,11 +31,14 @@ public class MessageReceivedListener implements IListener<MessageReceivedEvent> 
 
     private final transient ServerRepository serverRepository;
 
+    private final transient ChannelRepository channelRepository;
+
     @Autowired
-    public MessageReceivedListener(MessageRepository messageRepository, UserRepository userRepository, ServerRepository serverRepository) {
+    public MessageReceivedListener(MessageRepository messageRepository, UserRepository userRepository, ServerRepository serverRepository, ChannelRepository channelRepository) {
         this.messageRepository = messageRepository;
         this.userRepository = userRepository;
         this.serverRepository = serverRepository;
+        this.channelRepository = channelRepository;
     }
 
     @Override
@@ -68,27 +73,31 @@ public class MessageReceivedListener implements IListener<MessageReceivedEvent> 
             server.setUsers(userRepository.findAllByServers(server));
             serverRepository.saveAndFlush(server);
 
-            //Get users in guild and add them to the database if they don't exist already
+            //Get users in guild and add them to the database if they don't already exist
             List<IUser> users = guild.getUsers();
             for (IUser iUser : users) {
                 User user = userRepository.findById(iUser.getLongID()).orElse(new User(iUser.getLongID(), iUser.getName()));
                 userRepository.saveAndFlush(user);
             }
 
+            //Get channels in guild and add them to the database if they don't already exist
+            List<IChannel> channels = guild.getChannels();
+            for (IChannel aChannel : channels) {
+                Channel bChannel = channelRepository.findById(aChannel.getLongID()).orElse(new Channel(aChannel.getLongID(), aChannel.getName(), serverRepository.getOne(guild.getLongID())));
+                channelRepository.saveAndFlush(bChannel);
+            }
+
             //Get all unsaved messages in the channel and add their metadata to the database
-            List<IMessage> lobbyExternMessages = channel.getFullMessageHistory();
-            log.error("Gefundene: " + lobbyExternMessages.size());
-            int i = 0;
-            for (IMessage lobbyExternMessage : lobbyExternMessages) {
+            List<IMessage> messages = channel.getFullMessageHistory();
+            for (IMessage lobbyExternMessage : messages) {
                 User author = userRepository.getOne(lobbyExternMessage.getAuthor().getLongID());
                 int length = lobbyExternMessage.getContent().length();
                 Date creationDate = Date.from(lobbyExternMessage.getCreationDate());
                 //lobbyExternMessage.getMentions();       coming soon
-                Message message = messageRepository.findById(lobbyExternMessage.getLongID()).orElse(new Message(lobbyExternMessage.getLongID(), length, author, creationDate));
+                Message message = messageRepository.findById(lobbyExternMessage.getLongID()).
+                        orElse(new Message(lobbyExternMessage.getLongID(), length, author, creationDate, channelRepository.getOne(channel.getLongID())));
                 messageRepository.saveAndFlush(message);
-                i++;
             }
-            log.error(i + "");
             return true;
         } catch (NullPointerException e) {
             log.error("NullPointerException was thrown!");

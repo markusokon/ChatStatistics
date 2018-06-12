@@ -1,5 +1,6 @@
 package de.markus.statbot.bot;
 
+import de.markus.statbot.repositories.ChannelRepository;
 import de.markus.statbot.repositories.MessageRepository;
 import de.markus.statbot.repositories.ServerRepository;
 import de.markus.statbot.repositories.UserRepository;
@@ -26,13 +27,16 @@ public class DiscordBot {
     @Autowired
     private transient ServerRepository serverRepository;
 
+    @Autowired
+    private transient ChannelRepository channelRepository;
+
     @PostConstruct
     public void init() {
-        IDiscordClient client = createClient("token", true);
+        IDiscordClient client = createClient("NDU1NTAxNzc1Njk3MzQ2NTgy.DgHLjA.4gyOml60yTTYC55QZnI3qAqP2rg", true);
         //Events
         assert client != null;
-        EventDispatcher dispatcher = client != null ? client.getDispatcher() : null; // Gets the EventDispatcher instance for this client instance
-        dispatcher.registerListener(new MessageReceivedListener(messageRepository,userRepository,serverRepository));
+        EventDispatcher dispatcher = client.getDispatcher(); // Gets the EventDispatcher instance for this client instance
+        dispatcher.registerListener(new MessageReceivedListener(messageRepository, userRepository, serverRepository, channelRepository));
     }
 
     private static IDiscordClient createClient(String token, boolean login) { // Returns a new instance of the Discord client
