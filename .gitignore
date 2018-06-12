@@ -23,3 +23,6 @@
 /dist/
 /nbdist/
 /.nb-gradle/
+
+### javadocs ###
+Discord4J-2.10.1-javadoc.jar

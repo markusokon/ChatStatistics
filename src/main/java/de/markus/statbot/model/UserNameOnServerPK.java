@@ -9,18 +9,16 @@ import javax.persistence.Embeddable;
 @Getter
 public class UserNameOnServerPK {
 
-    @Column(nullable = false)
-    private Long serverId;
+    private Long server_Id_FK;
 
-    @Column(nullable = false)
-    private Long userId;
+    private Long user_Id_FK;
 
     protected UserNameOnServerPK() {
     }
 
-    public UserNameOnServerPK(Long serverId, Long userId) {
-        this.serverId = serverId;
-        this.userId = userId;
+    public UserNameOnServerPK(Long server_Id_FK, Long user_Id_FK) {
+        this.server_Id_FK = server_Id_FK;
+        this.user_Id_FK = user_Id_FK;
     }
 
     @Override
@@ -33,16 +31,16 @@ public class UserNameOnServerPK {
         }
         UserNameOnServerPK castOther = (UserNameOnServerPK) other;
         return
-                (this.serverId.equals(castOther.serverId))
-                        && this.userId.equals(castOther.userId);
+                (this.server_Id_FK.equals(castOther.server_Id_FK))
+                        && this.user_Id_FK.equals(castOther.user_Id_FK);
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int hash = 17;
-        hash = hash * prime + this.serverId.hashCode();
-        hash = hash * prime + this.userId.hashCode();
+        hash = hash * prime + this.server_Id_FK.hashCode();
+        hash = hash * prime + this.user_Id_FK.hashCode();
         return hash;
     }
 

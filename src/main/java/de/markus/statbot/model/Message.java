@@ -4,6 +4,7 @@ import lombok.Getter;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.util.Date;
 
@@ -12,18 +13,19 @@ import java.util.Date;
 public class Message {
 
     @Id
-    private Long id;
+    private Long message_id;
     private Integer length;
     private Date creationDate;
 
     @ManyToOne
+    @JoinColumn(name="user_Id", nullable=false, updatable = false)
     private User author;
 
     protected Message() {
     }
 
-    public Message(Long id, Integer length, User author, Date creationDate) {
-        this.id = id;
+    public Message(Long message_id, Integer length, User author, Date creationDate) {
+        this.message_id = message_id;
         this.length = length;
         this.author = author;
         this.creationDate = creationDate;

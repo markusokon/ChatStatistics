@@ -3,10 +3,7 @@ package de.markus.statbot.model;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.List;
 
 @Entity
@@ -15,21 +12,23 @@ import java.util.List;
 public class User {
 
     @Id
-    private Long id;
+    @Column(unique = true, nullable = false)
+    private Long user_Id;
 
     private String globalName;
 
     @ManyToMany
-    private List<Server> server;
+    private List<Server> servers;
 
-    @OneToMany
+    @OneToMany(mappedBy = "author")
     private List<Message> messages;
 
     protected User() {
     }
 
-    public User(Long id) {
-        this.id = id;
+    public User(Long user_Id, String globalName) {
+        this.user_Id = user_Id;
+        this.globalName = globalName;
     }
 
 }

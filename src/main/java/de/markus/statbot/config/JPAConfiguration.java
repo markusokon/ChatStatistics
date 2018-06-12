@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.data.jpa.repository.config.JpaRepositoryConfigExtension;
 
 /**
- * Gibt den Ort der Repositories an
+ * declares the location of repositories
  *
  * @author Nils Bauer
  *

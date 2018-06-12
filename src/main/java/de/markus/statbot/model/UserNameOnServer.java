@@ -12,15 +12,15 @@ import javax.persistence.Entity;
 public class UserNameOnServer {
 
     @EmbeddedId
-    private UserNameOnServerPK id;
+    private UserNameOnServerPK userNameOnServer_id;
 
     private String name;
 
     protected UserNameOnServer() {
     }
 
-    public UserNameOnServer(UserNameOnServerPK id, String name) {
-        this.id = id;
+    public UserNameOnServer(UserNameOnServerPK userNameOnServer_id, String name) {
+        this.userNameOnServer_id = userNameOnServer_id;
         this.name = name;
     }
 }

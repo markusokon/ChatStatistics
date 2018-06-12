@@ -4,9 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.annotation.Nullable;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.*;
 import java.util.List;
 
 @Entity
@@ -15,9 +13,10 @@ import java.util.List;
 public class Server {
 
     @Id
-    private Long Id;
+    private Long server_Id;
 
     @ManyToMany
+    @JoinColumn(referencedColumnName = "servers")
     private List<User> users;
 
     private String name;
@@ -25,8 +24,8 @@ public class Server {
     protected Server() {
     }
 
-    public Server(Long Id, String name, @Nullable List<User> users) {
-        this.Id = Id;
+    public Server(Long server_Id, String name, @Nullable List<User> users) {
+        this.server_Id = server_Id;
         this.name = name;
         this.users = users;
     }
