@@ -47,15 +47,17 @@ public class MessageReceivedListener implements IListener<MessageReceivedEvent> 
         IChannel channel = messageReceivedEvent.getChannel();
         IMessage message = messageReceivedEvent.getMessage();
         IUser author = messageReceivedEvent.getAuthor();
+
+        //Gigantic if condition for commands
         if (message.getContent().startsWith("!scan")) {
             List<IChannel> channelsMentioned = message.getChannelMentions();
             if (channelsMentioned.size() == 0) {
                 channel.sendMessage("Scan running...");
-                channel.sendMessage(getData(guild, channel) ? "Scan successful!" : "Scan failed :(");
+                channel.sendMessage(collectMessages(channel) ? "Scan successful!" : "Scan failed :(");
             } else
                 for (IChannel aChannelsMentioned : channelsMentioned) {
                     channel.sendMessage("Scan of " + aChannelsMentioned.getName() + " is running...");
-                    channel.sendMessage(getData(guild, aChannelsMentioned) ? "Scan of " + aChannelsMentioned.getName() + " succesful!" : "Scan " + aChannelsMentioned.getName() + " failed :(");
+                    channel.sendMessage(collectMessages(aChannelsMentioned) ? "Scan of " + aChannelsMentioned.getName() + " succesful!" : "Scan " + aChannelsMentioned.getName() + " failed :(");
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
@@ -65,7 +67,7 @@ public class MessageReceivedListener implements IListener<MessageReceivedEvent> 
         }
     }
 
-    private boolean getData(IGuild guild, IChannel channel) {
+    private boolean collectGuildData(IGuild guild) {
         try {
             //Add Guild to database if it doesn't exist already
             Server server = serverRepository.findById(guild.getLongID()).orElse(new Server(guild.getLongID(), guild.getName(), null));
@@ -86,7 +88,16 @@ public class MessageReceivedListener implements IListener<MessageReceivedEvent> 
                 Channel bChannel = channelRepository.findById(aChannel.getLongID()).orElse(new Channel(aChannel.getLongID(), aChannel.getName(), serverRepository.getOne(guild.getLongID())));
                 channelRepository.saveAndFlush(bChannel);
             }
+            return true;
+        } catch (Exception e){
+            log.error("Exception in collectGuildData was thrown!");
+            e.printStackTrace();
+            return false;
+        }
+    }
 
+    private boolean collectMessages(IChannel channel) {
+        try {
             //Get all unsaved messages in the channel and add their metadata to the database
             List<IMessage> messages = messageRepository.countByChannelId(channelRepository.getOne(channel.getLongID())) > 0
                     ? channel.getMessageHistoryTo(messageRepository.findByMaxCreationDate().toInstant())
@@ -101,8 +112,8 @@ public class MessageReceivedListener implements IListener<MessageReceivedEvent> 
                 messageRepository.saveAndFlush(message);
             }
             return true;
-        } catch (NullPointerException e) {
-            log.error("NullPointerException was thrown!");
+        } catch (Exception e) {
+            log.error("Exception in collectMessage was thrown!");
             e.printStackTrace();
             return false;
         }

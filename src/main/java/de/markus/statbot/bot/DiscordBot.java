@@ -32,7 +32,7 @@ public class DiscordBot {
 
     @PostConstruct
     public void init() {
-        IDiscordClient client = createClient("NDU1NTAxNzc1Njk3MzQ2NTgy.DgHLjA.4gyOml60yTTYC55QZnI3qAqP2rg", true);
+        IDiscordClient client = createClient("token", true);
         //Events
         assert client != null;
         EventDispatcher dispatcher = client.getDispatcher(); // Gets the EventDispatcher instance for this client instance
