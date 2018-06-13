@@ -20,16 +20,16 @@ public class Message {
 
     @ManyToOne
     @JoinColumn(name = "messages", updatable = false)
-    private Channel channel_Id;
+    private Channel channelId;
 
     protected Message() {
     }
 
-    public Message(Long message_id, Integer length, User author, Date creationDate, Channel channel_Id) {
+    public Message(Long message_id, Integer length, User author, Date creationDate, Channel channelId) {
         this.message_id = message_id;
         this.length = length;
         this.author = author;
         this.creationDate = creationDate;
-        this.channel_Id = channel_Id;
+        this.channelId = channelId;
     }
 }

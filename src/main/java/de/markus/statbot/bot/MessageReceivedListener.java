@@ -88,14 +88,16 @@ public class MessageReceivedListener implements IListener<MessageReceivedEvent> 
             }
 
             //Get all unsaved messages in the channel and add their metadata to the database
-            List<IMessage> messages = channel.getFullMessageHistory();
-            for (IMessage lobbyExternMessage : messages) {
-                User author = userRepository.getOne(lobbyExternMessage.getAuthor().getLongID());
-                int length = lobbyExternMessage.getContent().length();
-                Date creationDate = Date.from(lobbyExternMessage.getCreationDate());
-                //lobbyExternMessage.getMentions();       coming soon
-                Message message = messageRepository.findById(lobbyExternMessage.getLongID()).
-                        orElse(new Message(lobbyExternMessage.getLongID(), length, author, creationDate, channelRepository.getOne(channel.getLongID())));
+            List<IMessage> messages = messageRepository.countByChannelId(channelRepository.getOne(channel.getLongID())) > 0
+                    ? channel.getMessageHistoryTo(messageRepository.findByMaxCreationDate().toInstant())
+                    : channel.getFullMessageHistory();
+            for (IMessage iMessage : messages) {
+                User author = userRepository.getOne(iMessage.getAuthor().getLongID());
+                int length = iMessage.getContent().length();
+                Date creationDate = Date.from(iMessage.getCreationDate());
+                //iMessage.getMentions();       coming soon
+                Message message = messageRepository.findById(iMessage.getLongID()).
+                        orElse(new Message(iMessage.getLongID(), length, author, creationDate, channelRepository.getOne(channel.getLongID())));
                 messageRepository.saveAndFlush(message);
             }
             return true;

@@ -13,7 +13,7 @@ public class Channel {
     private Long channel_Id;
     private String name;
 
-    @OneToMany(mappedBy = "channel_Id")
+    @OneToMany(mappedBy = "channelId")
     private List<Message> messages;
 
     @ManyToOne

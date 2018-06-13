@@ -1,5 +1,6 @@
 package de.markus.statbot.repositories;
 
+import de.markus.statbot.model.Channel;
 import de.markus.statbot.model.Message;
 import de.markus.statbot.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,4 +16,6 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
 
     @Query("select max(m.creationDate) from Message m")
     Date findByMaxCreationDate();
+
+    int countByChannelId(Channel channelId);
 }
