@@ -1,5 +1,10 @@
-package de.markus.statbot.bot;
+package de.markus.statbot.bots.discord;
 
+import de.btobastian.sdcf4j.CommandHandler;
+import de.btobastian.sdcf4j.handler.Discord4JHandler;
+import de.markus.statbot.bots.discord.commands.CollectCommand;
+import de.markus.statbot.bots.discord.commands.ScanCommand;
+import de.markus.statbot.bots.discord.commands.UpdateCommand;
 import de.markus.statbot.repositories.ChannelRepository;
 import de.markus.statbot.repositories.MessageRepository;
 import de.markus.statbot.repositories.ServerRepository;
@@ -9,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
-import sx.blah.discord.api.events.EventDispatcher;
 import sx.blah.discord.util.DiscordException;
 
 import javax.annotation.PostConstruct;
@@ -35,8 +39,10 @@ public class DiscordBot {
         IDiscordClient client = createClient("token", true);
         //Events
         assert client != null;
-        EventDispatcher dispatcher = client.getDispatcher(); // Gets the EventDispatcher instance for this client instance
-        dispatcher.registerListener(new MessageReceivedListener(messageRepository, userRepository, serverRepository, channelRepository));
+        CommandHandler cmdHandler = new Discord4JHandler(client);
+        cmdHandler.registerCommand(new ScanCommand(messageRepository, channelRepository, userRepository, serverRepository));
+        cmdHandler.registerCommand(new UpdateCommand(messageRepository, channelRepository, userRepository, serverRepository));
+        cmdHandler.registerCommand(new CollectCommand(messageRepository, channelRepository, userRepository, serverRepository));
     }
 
     private static IDiscordClient createClient(String token, boolean login) { // Returns a new instance of the Discord client
