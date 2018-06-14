@@ -12,7 +12,7 @@ import java.util.List;
 public class User {
 
     @Id
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private Long user_Id;
 
     private String globalName;

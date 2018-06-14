@@ -19,7 +19,7 @@ public class Message {
     private User author;
 
     @ManyToOne
-    @JoinColumn(name = "messages", updatable = false)
+    @JoinColumn(name = "channel_Id", updatable = false)
     private Channel channelId;
 
     protected Message() {
