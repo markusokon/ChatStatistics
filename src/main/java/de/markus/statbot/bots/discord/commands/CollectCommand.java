@@ -39,8 +39,8 @@ public class CollectCommand implements CommandExecutor {
 
     @Command(aliases = "!collect")
     public void onCommand(IGuild guild, IChannel channel, IMessage message) {
-        if (message.getAuthor().getLongID() != 263019299751460864L) {
-            channel.sendMessage("You are not @" + message.getAuthor().getName() + "#1337!");
+        if (message.getAuthor().getLongID() != 263019299751460864L/*Wormi#1337s ID*/) {
+            channel.sendMessage("You are not " + guild.getUserByID(263019299751460864L) + "!");
             return;
         }
         channel.sendMessage("Collecting infrastructuredata..");
