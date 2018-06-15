@@ -50,7 +50,8 @@ public class CollectCommand implements CommandExecutor {
     private boolean collectGuildData(IGuild guild) {
         try {
             //Add Guild to database if it doesn't exist already
-            Server server = serverRepository.findById(guild.getLongID()).orElse(new Server(guild.getLongID(), guild.getName(), null));
+            serverRepository.deleteById(guild.getLongID());
+            Server server = new Server(guild.getLongID(), guild.getName(), null);
             serverRepository.saveAndFlush(server);
             server.setUsers(userRepository.findAllByServers(server));
             serverRepository.saveAndFlush(server);
@@ -58,14 +59,16 @@ public class CollectCommand implements CommandExecutor {
             //Get users in guild and add them to the database if they don't already exist
             List<IUser> users = guild.getUsers();
             for (IUser iUser : users) {
-                User user = userRepository.findById(iUser.getLongID()).orElse(new User(iUser.getLongID(), iUser.getName()));
+                userRepository.deleteById(iUser.getLongID());
+                User user = new User(iUser.getLongID(), iUser.getName());
                 userRepository.saveAndFlush(user);
             }
 
             //Get channels in guild and add them to the database if they don't already exist
             List<IChannel> channels = guild.getChannels();
             for (IChannel aChannel : channels) {
-                Channel bChannel = channelRepository.findById(aChannel.getLongID()).orElse(new Channel(aChannel.getLongID(), aChannel.getName(), serverRepository.getOne(guild.getLongID())));
+                channelRepository.deleteById(aChannel.getLongID());
+                Channel bChannel = new Channel(aChannel.getLongID(), aChannel.getName(), serverRepository.getOne(guild.getLongID()));
                 channelRepository.saveAndFlush(bChannel);
             }
             return true;

@@ -4,7 +4,6 @@ import de.btobastian.sdcf4j.CommandHandler;
 import de.btobastian.sdcf4j.handler.Discord4JHandler;
 import de.markus.statbot.bots.discord.commands.CollectCommand;
 import de.markus.statbot.bots.discord.commands.ScanCommand;
-import de.markus.statbot.bots.discord.commands.UpdateCommand;
 import de.markus.statbot.repositories.ChannelRepository;
 import de.markus.statbot.repositories.MessageRepository;
 import de.markus.statbot.repositories.ServerRepository;
@@ -37,11 +36,10 @@ public class DiscordBot {
     @PostConstruct
     public void init() {
         IDiscordClient client = createClient("token", true);
-        //Events
+        //Commands
         assert client != null;
         CommandHandler cmdHandler = new Discord4JHandler(client);
         cmdHandler.registerCommand(new ScanCommand(messageRepository, channelRepository, userRepository, serverRepository));
-        cmdHandler.registerCommand(new UpdateCommand(messageRepository, channelRepository, userRepository, serverRepository));
         cmdHandler.registerCommand(new CollectCommand(messageRepository, channelRepository, userRepository, serverRepository));
     }
 
